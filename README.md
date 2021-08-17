@@ -15,13 +15,14 @@ Download source code:
 # apt install cmake librdkafka-dev
 ```
 
-### Starting microservice infrastructure
+### Starting microservice infrastructure with docker compose
 
 run 
 ```bash
 cd orchestra/docker
 docker-compose up
 ```
+
 
 Starts the following containers:  
 * Kafka: `exchange_kafka`
@@ -33,6 +34,29 @@ Envoy is a service proxy and it's deployment area is displayed in the following,
 ![simplified architecture](https://raw.githubusercontent.com/gcomte/dingir-exchange-docs/main/img/simplifiedArchitecture.svg)
 
 (checkout overall Fluidex architecture [here](https://www.fluidex.io/en/blog/fluidex-architecture/))
+
+
+### Starting microservice infrastructure with kubernetes
+
+
+create kubernetes deployment files with https://kompose.io/
+
+```bash
+cd orchestra/docker
+kompose convert
+```
+
+in exchange-kafka-deployment.yaml under spec->containers->env->value: exchange_zookeeper:2181 change the underline to a dash like so:
+
+```yaml
+value: exchange-zookeeper:2181
+```
+
+then deploy to a cluser:
+
+```bash
+kubectl apply $(ls exchange*.yaml | awk ' { print " -f " $1 } ')
+```
 
 ### Starting the matching engine
 
